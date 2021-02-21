@@ -1,0 +1,187 @@
+//AUTHOR: Aaron Willis
+//COURSE: CPT 187
+//PURPOSE: Creates New UserNames and Passwords as well as Confirms Login details to be Accurate
+//STARTDATE: 02/17/2021
+
+package edu.cpt187.willis.exercise6;
+
+//Import FileInputStream Object
+import java.io.FileInputStream;
+
+//Import FileWriter Object
+import java.io.FileWriter;
+
+//Import IOException Object
+import java.io.IOException;
+
+//Import PrintWriter Object
+import java.io.PrintWriter;
+
+//Import Scanner Object
+import java.util.Scanner;
+
+public class UserAccounts 
+{
+	//Declare and Initialize All CONSTANTS
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+
+	//Declare and Initialize All Attributes
+	private String[] userNames = new String[MAXIMUM_RECORDS];
+	private String[] passwords = new String[MAXIMUM_RECORDS];
+	private String masterFileName = "";
+	private int recordCount = 0;
+	private int searchedIndex = 0;
+
+	//UserAccounts NON-Default Class Constructor
+	public UserAccounts(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//END of UserAccounts NON-Default Class Constructor
+
+	//SET METHODS SECTION
+
+	//Set Method to Assign UserAccount Arrays from File Read Using Try/Catch
+	public void setUserAccountArrays()
+	{
+		//try block used for file handling
+		try
+		{
+			//Scanner and FileInputStream instantiation statement
+			Scanner infile = new Scanner (new FileInputStream(masterFileName));
+
+			//Reset Value of recordCount Attribute using CONSTANT RESET_VALUE
+			recordCount = RESET_VALUE;
+
+			//Run While infile.hasNext() == true (TEST FOR EOF) && recordCounts < MAX_RECORDS
+			while (infile.hasNext() == true && recordCount < MAXIMUM_RECORDS)
+			{
+				//Read Contents of File
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next();
+
+				//Increment recordCount
+				recordCount++;
+			}//END of Run While infile.hasNext() == true (TEST FOR EOF) && recordCount < MAX_RECORDS
+
+			//Close the Scanner and FileInputStream Objects
+			infile.close();
+		}//END of try block used for file handling
+
+		//Catch Block used for file handling when something goes wrong with Opening or Reading the File
+		catch (IOException ex)
+		{
+			//If File cannot be Found or Opened, set Flag to CONSTANT value of NOT_FOUND
+			recordCount = NOT_FOUND;
+		}//END of Catch Block used for file handling when something goes wrong with Opening or Reading the File
+	}//END of Set Method to Assign UserAccount Arrays from File Read Using Try/Catch
+
+	//Set Method to Assign Appropriate Value to searchedIndex using borrowedUserName
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+	}//END of Set Method to Assign Appropriate Value to searchedIndex using borrowedUserName
+
+	//Set Method OVERLOADED to Assign Appropriate Value to searchedIndex using borrowedUserName and borrowedPassword
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)
+	{
+		//Assign Appropriate to searchedIndex Attribute
+		searchedIndex = getSeqSearch(borrowedUserName);
+		
+		//Assign NOT_FOUND to searchedIndex if searchedIndex is >= RESET_VALUE && getPasswordMatch(borrowedPassword) is false
+		if (searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		}//END of Assign NOT_FOUND to searchedIndex if searchedIndex is >= RESET_VALUE && getPasswordMatch(borrowedPassword) is false
+	}//END of Set Method OVERLOADED to Assign Appropriate Value to searchedIndex using borrowedUserName and borrowedPassword
+
+	//Set Method to Write userName and password to the master file
+	public void setWriteOneRecord(String borrowedUserName, String borrowedPassword)
+	{
+		//try block used for Writing to a File
+		try
+		{
+			//PrintWriter and FileWriter instantiation statement
+			PrintWriter filePW = new PrintWriter (new FileWriter(masterFileName, true));
+
+			//Write Borrowed Values to File
+			filePW.printf("%n%s\t%s", borrowedUserName, borrowedPassword);
+
+			//Close the PrintWriter and FileWriter Objects
+			filePW.close();
+
+			//Increment recordCount
+			recordCount++;
+		}//END of try block used for Writing to a File
+
+		//Catch Block used for When File cannot be Found or Opened
+		catch (IOException ex)
+		{
+			//Set Flag to Value to NOT_FOUND
+			recordCount = NOT_FOUND;
+		}//END of Catch Block used for When File cannot be Found or Opened
+	}//END of Set Method to Write userName and password to the master file
+
+	//GET METHOD SECTION
+
+	//Get Method to Return Sequential Search Values
+	public int getSeqSearch(String borrowedBorrowedUsername)
+	{
+		//Declare and Initialize Local Variables
+		int localIndex = 0;
+		int localFound = NOT_FOUND;
+
+		//Run While localIndex < recordCount
+		while (localIndex < recordCount)
+		{
+			//Test if borrowedBorrowedUsername is Equal to userName at localIndex while Ignoring Case
+			if (borrowedBorrowedUsername.equalsIgnoreCase(userNames[localIndex]))
+			{
+				//Assign localIndex to localFound AND recordCount to localIndex
+				localFound = localIndex;
+				localIndex = recordCount;
+			}//END of Test if borrowedBorrowedUsername is Equal to userName at localIndex while Ignoring Case
+
+			//Else with NO Test Condition
+			else
+			{
+				//Increment localIndex
+				localIndex++;
+			}//END of Else with NO Test Condition
+		}//END of Run While localIndex < recordCount
+
+		//Return localFound
+		return localFound;
+	}//END of Get Method to Return Sequential Search Values
+
+	//Get Method to Return true OR false depending on if passwords match INCLUDING case
+	public boolean getPasswordMatch(String borrowedBorrowedPassword)
+	{
+		return (borrowedBorrowedPassword.equals(passwords[searchedIndex]));
+	}//END of Get Method to Return true OR false depending on if passwords match INCLUDING case
+
+	//Get Method to Return File Name
+	public String getFileName()
+	{
+		return masterFileName;
+	}//END of Get Method to Return File Name
+
+	//Get Method to Return Maximum Number of Records
+	public int getMaximumRecords()
+	{
+		return MAXIMUM_RECORDS;
+	}//END of Get Method to Return Maximum Number of Records
+
+	//Get Method to Return Record Count
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//END of Get Method to Return Record Count
+
+	//Get Method to Return Searched Index
+	public int getSearchedIndex()
+	{
+		return searchedIndex;
+	}//END of Get Method to Return Searched Index
+}//END of UserAccounts Supportive Class

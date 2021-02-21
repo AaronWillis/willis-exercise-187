@@ -1,0 +1,81 @@
+//AUTHOR: Aaron Willis
+//COURSE: CPT 187
+//PURPOSE: Writes Records containing Item IDs, Names, Prices, Quantities, and Order Costs to an Appropriate File
+//STARTDATE: 02/17/2021
+
+package edu.cpt187.willis.exercise6;
+
+//Import the PrintWriter Object
+import java.io.PrintWriter;
+
+//Import the FileWriter Object
+import java.io.FileWriter;
+
+//Import the IOException Object
+import java.io.IOException;
+
+public class WriteOrder 
+{
+	//Declare and Initialize all Attributes to their Default Values
+	private boolean fileFoundFlag = false;
+	private String masterFileName = "";
+	private int recordCount = 0;
+
+	//WriteOrder NON-default class constructor
+	public WriteOrder(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}//END of WriteOrder NON-default class constructor
+
+	//SET METHODS SECTIONS
+
+	//Set Method that Assigns Appropriate Values to Save to File
+	public void setWriteOrder(int borrowedItemID, String borrowedItemName, double borrowedItemPrice, int borrowedQuantity, double borrowedOrderCost)
+	{
+		//try block used for Writing to a File
+		try
+		{
+			//PrintWriter and FileWriter instantiation statement
+			PrintWriter filePW = new PrintWriter (new FileWriter(masterFileName, true));
+
+			//Write Borrowed Values to File
+			filePW.printf("%n%d\t%s\t%f\t%d\t%f", borrowedItemID, borrowedItemName, borrowedItemPrice, borrowedQuantity, borrowedOrderCost);
+
+			//Set Flag Value to true
+			fileFoundFlag = true;
+
+			//Close the PrintWriter and FileWriter Objects
+			filePW.close();
+
+			//Increment recordCount
+			recordCount++;
+		}//END of try block used for Writing to a File
+
+		//Catch Block used for When File cannot be Found or Opened
+		catch (IOException ex)
+		{
+			//Set Flag to Value of false
+			fileFoundFlag = false;
+		}//END of Catch Block used for When File cannot be Found or Opened
+	}//END of Set Method that Assigns Appropriate Values to Save to File
+
+	//GET METHODS SECTION
+
+	//Get Method to Return fileFoundFlag
+	public boolean getFileFoundFlag()
+	{
+		return fileFoundFlag;
+	}//END of Get Method to Return fileFoundFlag
+
+	//Get Method to Return masterFileName
+	public String getFileName()
+	{
+		return masterFileName;
+	}//END of Get Method to Return masterFileName
+
+	//Get Method to Return recordCount
+	public int getRecordCount()
+	{
+		return recordCount;
+	}//END of Get Method to Return recordCount
+}//END of WriteOrder Class
